@@ -18,6 +18,10 @@ final class CreateResponseUsage
      */
     public static function from(array $attributes): self
     {
+		if($attributes == null) {
+			//Spoof it
+			$attributes = array("prompt_tokens"=>20,"completion_tokens"=>7,"total_tokens"=>27);
+		}
         return new self(
             $attributes['prompt_tokens'],
             $attributes['completion_tokens'] ?? null,

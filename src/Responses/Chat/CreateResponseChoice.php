@@ -18,6 +18,9 @@ final class CreateResponseChoice
      */
     public static function from(array $attributes): self
     {
+		if(!isset($attributes['index'])) {
+			$attributes['index'] = 0;
+		}
         return new self(
             $attributes['index'],
             CreateResponseMessage::from($attributes['message']),

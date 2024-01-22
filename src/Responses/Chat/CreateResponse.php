@@ -35,7 +35,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
         public readonly ?string $systemFingerprint,
         public readonly array $choices,
         public readonly CreateResponseUsage $usage,
-        private readonly MetaInformation $meta,
+        private readonly MetaInformation $meta
     ) {
     }
 
@@ -50,6 +50,12 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
             $result
         ), $attributes['choices']);
 
+		if(!isset($attributes['usage'])) {
+			//Spoof it
+			$attributes['usage'] = array("prompt_tokens"=>20,"completion_tokens"=>7,"total_tokens"=>27);
+		}
+		$usageDetails = CreateResponseUsage::from($attributes['usage']);
+		
         return new self(
             $attributes['id'],
             $attributes['object'],
@@ -57,8 +63,8 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
             $attributes['model'],
             $attributes['system_fingerprint'] ?? null,
             $choices,
-            CreateResponseUsage::from($attributes['usage']),
-            $meta,
+            $usageDetails,
+            $meta
         );
     }
 
@@ -77,7 +83,7 @@ final class CreateResponse implements ResponseContract, ResponseHasMetaInformati
                 static fn (CreateResponseChoice $result): array => $result->toArray(),
                 $this->choices,
             ),
-            'usage' => $this->usage->toArray(),
+            'usage' => $this->usage->toArray()
         ], fn (mixed $value): bool => ! is_null($value));
     }
 }
